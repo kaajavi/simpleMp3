@@ -18,32 +18,55 @@
  */
 var app = {
     // Application Constructor
+    var isCelu=false;
+    var listaMp3;
+    var indexMp3;
     initialize: function() {
-        this.bindEvents();
-    },
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
-    bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
-    },
+    document.addEventListener('deviceready', this.onDeviceReady, false);
+},
+
     // deviceready Event Handler
     //
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
-    onDeviceReady: function() {
-        app.receivedEvent('deviceready');
+    onDeviceReady: function() {                
+        isCelu=true;        
+        //TODO: ACA BUSCO LOS ARCHIVOS DE LA SD Y GENERO UNA LISTA
+        window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, this.addFilesToList, this.notExistFilesistem);        
     },
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
+    addFilesToList: function(fs){
+     console.log(fs);
+    },
+    notExistFilesistem: function(){
+    
+    },
+    playMusic: function(){
+    //TODO: Comenzar con la reproduccion (desde indexMp3)
+    },
+    stopMusic: function(){
+    },
+    back: function(){
+    },
+    next: function(){
+    },
 
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
-
-        console.log('Received Event: ' + id);
-    }
 };
+/*
+function success(entries) {
+    var i;
+    for (i=0; i<entries.length; i++) {
+        console.log(entries[i].name);
+    }
+}
+
+function fail(error) {
+    alert("Failed to list directory contents: " + error.code);
+}
+
+// Get a directory reader
+var directoryReader = dirEntry.createReader();
+
+// Get a list of all the entries in the directory
+directoryReader.readEntries(success,fail);
+
+*/
