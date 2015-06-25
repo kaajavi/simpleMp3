@@ -16,57 +16,78 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-var app = {
-    // Application Constructor
-    var isCelu=false;
-    var listaMp3;
-    var indexMp3;
-    initialize: function() {
-    document.addEventListener('deviceready', this.onDeviceReady, false);
-},
+var isCelu=false;
+var listaMp3=[];
+var indexMp3;
+var media=null;
+var filesystem;
+var directoryReader;
+var playing=false;
 
-    // deviceready Event Handler
-    //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicitly call 'app.receivedEvent(...);'
-    onDeviceReady: function() {                
-        isCelu=true;        
-        //TODO: ACA BUSCO LOS ARCHIVOS DE LA SD Y GENERO UNA LISTA
-        window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, this.addFilesToList, this.notExistFilesistem);        
-    },
-    addFilesToList: function(fs){
-     console.log(fs);
-    },
-    notExistFilesistem: function(){
-    
-    },
-    playMusic: function(){
-    //TODO: Comenzar con la reproduccion (desde indexMp3)
-    },
-    stopMusic: function(){
-    },
-    back: function(){
-    },
-    next: function(){
-    },
 
-};
-/*
-function success(entries) {
+document.addEventListener("deviceready", onDeviceReady, false); 
+document.addEventListener("menubutton", menuKeyDown, true);
+
+function menuKeyDown() {
+    alert('Menu button pressed.');
+}
+
+function onDeviceReady() {
+    isCelu=true;    
+    window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
+}
+
+function gotFS(fileSystem) {
+    directoryReader = fileSystem.root.createReader();
+    directoryReader.readEntries(getFiles)    
+}
+
+function getFiles(entries){           
+    alert("Cargando archivos:");
     var i;
     for (i=0; i<entries.length; i++) {
-        console.log(entries[i].name);
+        if (entries[i].name.substr(-3,3)==='mp3'){            
+            listaMp3.push(entries[i].toURL());
+        }
     }
+
 }
 
 function fail(error) {
-    alert("Failed to list directory contents: " + error.code);
+    alert(error.code);
+} 
+
+function play(){
+
+    if (media == null){
+        media = new Media(listaMp3[0], onSuccess, onError);
+    }
+    if (playing){
+        media.pause();
+        $("#playpause").attr('src','img/play.png');
+        playing = false;
+    }else{
+        media.play();
+        $("#playpause").attr('src','img/stop.png');
+        playing = true;
+    }
+
 }
 
-// Get a directory reader
-var directoryReader = dirEntry.createReader();
 
-// Get a list of all the entries in the directory
-directoryReader.readEntries(success,fail);
+// onSuccess Callback
+//
+function onSuccess() {
+    console.log("playAudio():Audio Success");
+}
 
-*/
+// onError Callback 
+//
+function onError(error) {
+    alert('code: '    + error.code    + '\n' + 
+          'message: ' + error.message + '\n');
+}
+
+
+
+
